@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin — MEGATEO-SHOP</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --fondo:#160a2e; --fondo-card:#211442;
+    --lima:#c6ff2e; --rosa:#ff2bd6; --cyan:#25f4ee;
+    --texto:#f3edff; --texto-suave:#b9a9e0;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Outfit',sans-serif;}
+body{background:var(--fondo);color:var(--texto);min-height:100vh;}
+
+header{
+    text-align:center;padding:28px 20px;
+    background:var(--fondo-card);border-bottom:3px solid var(--lima);
+}
+header h1{font-family:'Bungee',cursive;font-size:clamp(26px,6vw,42px);color:var(--lima);text-shadow:3px 3px 0 var(--rosa);}
+header p{color:var(--cyan);margin-top:8px;font-weight:600;}
+
+.contenedor{max-width:720px;margin:0 auto;padding:30px 18px 60px;}
+
+/* Pantalla de login */
+.login-box{text-align:center;padding:50px 20px;}
+.login-box p{color:var(--texto-suave);margin-bottom:22px;font-size:17px;}
+
+.btn{
+    border:none;cursor:pointer;font-weight:800;font-size:15px;
+    padding:14px 22px;border-radius:12px;transition:transform .1s,filter .15s;
+}
+.btn:active{transform:scale(.97);}
+.btn-google{background:#fff;color:#160a2e;display:inline-flex;align-items:center;gap:10px;}
+.btn-google img{width:22px;height:22px;}
+.btn-lima{background:var(--lima);color:#160a2e;}
+.btn-cyan{background:var(--cyan);color:#160a2e;}
+.btn-rosa{background:var(--rosa);color:#160a2e;}
+.btn-gris{background:rgba(255,255,255,.12);color:var(--texto-suave);}
+.btn:hover{filter:brightness(1.08);}
+
+/* Barra de usuario */
+.user-bar{
+    display:flex;justify-content:space-between;align-items:center;
+    background:var(--fondo-card);padding:14px 18px;border-radius:14px;margin-bottom:24px;
+    flex-wrap:wrap;gap:10px;
+}
+.user-bar span{color:var(--texto-suave);font-size:14px;}
+.user-bar b{color:var(--lima);}
+
+/* Tarjeta de producto */
+.prod{
+    background:var(--fondo-card);border-radius:16px;padding:18px;margin-bottom:18px;
+    border:2px solid transparent;transition:border-color .2s;
+}
+.prod:focus-within{border-color:var(--cyan);}
+.prod .fila{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.campo{flex:1;min-width:120px;}
+.campo label{display:block;font-size:12px;color:var(--texto-suave);margin-bottom:5px;}
+.campo input{
+    width:100%;padding:11px;background:var(--fondo);color:var(--texto);
+    border:1px solid rgba(255,255,255,.15);border-radius:9px;font-size:15px;
+}
+.campo.emoji input{text-align:center;font-size:22px;}
+.acciones{display:flex;gap:10px;flex-wrap:wrap;}
+.acciones .btn{flex:1;padding:12px;font-size:14px;}
+
+.titulo-seccion{
+    font-family:'Bungee',cursive;font-size:18px;color:var(--cyan);
+    margin:30px 0 16px;
+}
+
+.aviso{
+    background:rgba(255,43,214,.12);color:var(--rosa);
+    padding:14px;border-radius:12px;text-align:center;margin-bottom:20px;font-weight:600;
+}
+.ok{background:rgba(198,255,46,.12);color:var(--lima);}
+
+.cargando{text-align:center;color:var(--texto-suave);padding:40px;}
+.oculto{display:none;}
+
+/* Controles de imagen */
+.img-area{display:flex;align-items:center;gap:14px;margin-bottom:12px;}
+.img-prev{
+    width:70px;height:70px;border-radius:12px;flex:0 0 70px;
+    background:var(--fondo);display:flex;align-items:center;justify-content:center;
+    font-size:34px;overflow:hidden;border:1px solid rgba(255,255,255,.15);
+}
+.img-prev img{width:100%;height:100%;object-fit:cover;}
+.btn-file{
+    background:rgba(255,255,255,.1);color:var(--texto);
+    padding:10px 16px;border-radius:10px;font-size:13px;font-weight:700;
+    cursor:pointer;display:inline-block;
+}
+.btn-file:hover{background:rgba(255,255,255,.18);}
+.img-area input[type=file]{display:none;}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>PANEL ADMIN</h1>
+    <p>🔒 MEGATEO-SHOP</p>
+</header>
+
+<div class="contenedor">
+
+    <!-- ====== PANTALLA DE LOGIN ====== -->
+    <div id="login" class="login-box">
+        <p>Inicia sesión para administrar tu tienda.</p>
+        <button class="btn btn-google" id="btn-login">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="">
+            Iniciar sesión con Google
+        </button>
+        <div id="login-error" class="aviso oculto" style="margin-top:20px;"></div>
+    </div>
+
+    <!-- ====== PANEL (solo admin) ====== -->
+    <div id="panel" class="oculto">
+
+        <div class="user-bar">
+            <span>Conectado como <b id="email-admin"></b></span>
+            <button class="btn btn-gris" id="btn-logout">Cerrar sesión</button>
+        </div>
+
+        <div id="mensaje" class="oculto"></div>
+
+        <div class="titulo-seccion">📦 Tus Brainrots</div>
+        <div id="lista" class="cargando">Cargando…</div>
+
+        <div class="titulo-seccion">➕ Agregar Brainrot nuevo</div>
+        <div class="prod">
+            <div class="img-area">
+                <div class="img-prev" id="n-prev">🎮</div>
+                <label class="btn-file">📷 Elegir imagen<input type="file" id="n-archivo" accept="image/*"></label>
+            </div>
+            <div class="fila">
+                <div class="campo"><label>Nombre</label><input id="n-nombre" placeholder="Ej: Lirili Larila"></div>
+                <div class="campo emoji" style="flex:0 0 70px"><label>Emoji (si no hay foto)</label><input id="n-emoji" value="🎮" maxlength="4"></div>
+            </div>
+            <div class="fila">
+                <div class="campo"><label>Precio (sin puntos)</label><input id="n-precio" type="number" placeholder="5000"></div>
+                <div class="campo"><label>Cantidad</label><input id="n-stock" type="number" placeholder="3"></div>
+            </div>
+            <button class="btn btn-lima" id="btn-agregar" style="width:100%">Agregar a la tienda</button>
+        </div>
+
+    </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getDatabase, ref, onValue, update, remove, get, set }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDTUNZPry61umZiXDt77bqf_AQliEgZ-C0",
+  authDomain: "megateo-shop.firebaseapp.com",
+  databaseURL: "https://megateo-shop-default-rtdb.firebaseio.com",
+  projectId: "megateo-shop",
+  storageBucket: "megateo-shop.firebasestorage.app",
+  messagingSenderId: "15522133488",
+  appId: "1:15522133488:web:8bd2a92dd0292bb67cd935"
+};
+
+// 👇 TU CORREO DE ADMIN (el único que puede entrar)
+const ADMIN_EMAIL = "camiclash15@gmail.com";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
+
+const $ = (id) => document.getElementById(id);
+
+// Achica y comprime una imagen para que no pese mucho.
+// Devuelve la foto lista para guardar (como texto base64).
+function procesarImagen(file){
+    return new Promise((resolve, reject) => {
+        if (!file){ resolve(null); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+            const img = new Image();
+            img.onload = () => {
+                const max = 500; // tamaño máximo en píxeles
+                let { width, height } = img;
+                if (width > height && width > max){ height = height * max / width; width = max; }
+                else if (height > max){ width = width * max / height; height = max; }
+                const canvas = document.createElement("canvas");
+                canvas.width = width; canvas.height = height;
+                canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL("image/jpeg", 0.8));
+            };
+            img.onerror = reject;
+            img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+// ===== LOGIN =====
+$("btn-login").onclick = () => {
+    signInWithPopup(auth, provider).catch(err => {
+        $("login-error").textContent = "No se pudo iniciar sesión: " + err.message;
+        $("login-error").classList.remove("oculto");
+    });
+};
+$("btn-logout").onclick = () => signOut(auth);
+
+onAuthStateChanged(auth, (user) => {
+    if (user && user.email === ADMIN_EMAIL){
+        // Es el admin: mostrar panel
+        $("login").classList.add("oculto");
+        $("panel").classList.remove("oculto");
+        $("email-admin").textContent = user.email;
+        escucharProductos();
+    } else if (user){
+        // Inició sesión pero NO es el admin
+        signOut(auth);
+        $("login-error").textContent = "Esa cuenta no tiene permiso de administrador.";
+        $("login-error").classList.remove("oculto");
+    } else {
+        // Nadie conectado
+        $("login").classList.remove("oculto");
+        $("panel").classList.add("oculto");
+    }
+});
+
+// ===== MENSAJES =====
+function mensaje(texto, ok=true){
+    const m = $("mensaje");
+    m.textContent = texto;
+    m.className = "aviso " + (ok ? "ok" : "");
+    setTimeout(() => m.classList.add("oculto"), 2500);
+}
+
+// ===== LISTA DE PRODUCTOS =====
+const productosRef = ref(db, "productos");
+
+function escucharProductos(){
+    onValue(productosRef, (snap) => {
+        const productos = snap.val();
+
+        // Si está vacío, sembramos los Brainrots iniciales una sola vez
+        if (!productos){
+            set(productosRef, {
+                tralalero:  { nombre:"Tralalero Tralala",    emoji:"🦈", precio:5000, stock:3 },
+                bombardiro: { nombre:"Bombardiro Crocodilo", emoji:"🐊", precio:8000, stock:2 }
+            });
+            return;
+        }
+
+        pintarLista(productos);
+    });
+}
+
+function pintarLista(productos){
+    const cont = $("lista");
+    cont.className = "";
+    cont.innerHTML = "";
+
+    Object.entries(productos).forEach(([id, p]) => {
+        const div = document.createElement("div");
+        div.className = "prod";
+        div._nuevaImg = null; // aquí se guarda la foto nueva si el admin elige una
+        div.innerHTML = `
+            <div class="img-area">
+                <div class="img-prev">${p.imagen ? `<img src="${p.imagen}">` : (p.emoji ?? "🎮")}</div>
+                <label class="btn-file">📷 Cambiar imagen<input type="file" accept="image/*" data-campo="archivo"></label>
+            </div>
+            <div class="fila">
+                <div class="campo"><label>Nombre</label><input value="${p.nombre ?? ""}" data-campo="nombre"></div>
+                <div class="campo emoji" style="flex:0 0 70px"><label>Emoji</label><input value="${p.emoji ?? ""}" maxlength="4" data-campo="emoji"></div>
+            </div>
+            <div class="fila">
+                <div class="campo"><label>Precio</label><input type="number" value="${p.precio ?? 0}" data-campo="precio"></div>
+                <div class="campo"><label>Stock</label><input type="number" value="${p.stock ?? 0}" data-campo="stock"></div>
+            </div>
+            <div class="acciones">
+                <button class="btn btn-cyan" data-accion="guardar">💾 Guardar</button>
+                <button class="btn btn-rosa" data-accion="borrar">🗑 Eliminar</button>
+            </div>
+        `;
+
+        // Cuando elige una imagen nueva: la procesa y muestra el preview
+        const inputArchivo = div.querySelector('[data-campo="archivo"]');
+        inputArchivo.onchange = async () => {
+            const file = inputArchivo.files[0];
+            if (!file) return;
+            mensaje("Procesando imagen…");
+            div._nuevaImg = await procesarImagen(file);
+            div.querySelector(".img-prev").innerHTML = `<img src="${div._nuevaImg}">`;
+            mensaje("📷 Imagen lista. Dale Guardar para aplicarla.");
+        };
+
+        // Guardar cambios
+        div.querySelector('[data-accion="guardar"]').onclick = () => {
+            const datos = {};
+            div.querySelectorAll("[data-campo]").forEach(inp => {
+                const campo = inp.getAttribute("data-campo");
+                if (campo === "archivo") return; // ese no es un dato de texto
+                datos[campo] = (campo === "precio" || campo === "stock")
+                    ? Number(inp.value) : inp.value.trim();
+            });
+            if (div._nuevaImg) datos.imagen = div._nuevaImg; // solo si eligió foto nueva
+
+            update(ref(db, "productos/" + id), datos)
+                .then(() => mensaje("✅ '" + datos.nombre + "' guardado"))
+                .catch(e => mensaje("Error: " + e.message, false));
+        };
+
+        // Eliminar
+        div.querySelector('[data-accion="borrar"]').onclick = () => {
+            if (confirm("¿Seguro que quieres eliminar '" + (p.nombre ?? id) + "'?")){
+                remove(ref(db, "productos/" + id))
+                    .then(() => mensaje("🗑 Eliminado"))
+                    .catch(e => mensaje("Error: " + e.message, false));
+            }
+        };
+
+        cont.appendChild(div);
+    });
+}
+
+// ===== AGREGAR NUEVO =====
+let imgNueva = null; // foto elegida para el Brainrot nuevo
+
+$("n-archivo").onchange = async () => {
+    const file = $("n-archivo").files[0];
+    if (!file) return;
+    mensaje("Procesando imagen…");
+    imgNueva = await procesarImagen(file);
+    $("n-prev").innerHTML = `<img src="${imgNueva}">`;
+    mensaje("📷 Imagen lista");
+};
+
+$("btn-agregar").onclick = () => {
+    const nombre = $("n-nombre").value.trim();
+    const emoji  = $("n-emoji").value.trim() || "🎮";
+    const precio = Number($("n-precio").value);
+    const stock  = Number($("n-stock").value);
+
+    if (!nombre){ mensaje("Ponle un nombre al Brainrot", false); return; }
+    if (!precio || precio <= 0){ mensaje("Pon un precio válido", false); return; }
+
+    // id automático: el nombre en minúsculas, sin espacios ni símbolos raros
+    const id = nombre.toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]/g, "") + "_" + Date.now().toString().slice(-4);
+
+    const datos = { nombre, emoji, precio, stock };
+    if (imgNueva) datos.imagen = imgNueva;
+
+    set(ref(db, "productos/" + id), datos)
+        .then(() => {
+            mensaje("✅ '" + nombre + "' agregado a la tienda");
+            $("n-nombre").value = ""; $("n-emoji").value = "🎮";
+            $("n-precio").value = ""; $("n-stock").value = "";
+            $("n-prev").innerHTML = "🎮"; $("n-archivo").value = ""; imgNueva = null;
+        })
+        .catch(e => mensaje("Error: " + e.message, false));
+};
+</script>
+
+</body>
+</html>
