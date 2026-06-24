@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEGATEO-SHOP — Brainrots</title>
+
+<!-- Fuentes de Google (necesitas internet para que se vean) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+
+/* ============================================
+   COLORES Y BASE
+   ============================================ */
+:root{
+    --fondo:        #160a2e;   /* morado oscuro de fondo */
+    --fondo-card:   #211442;   /* morado de las tarjetas */
+    --lima:         #c6ff2e;   /* verde lima eléctrico */
+    --rosa:         #ff2bd6;   /* rosa fosforescente */
+    --cyan:         #25f4ee;   /* celeste brillante */
+    --texto:        #f3edff;   /* texto claro */
+    --texto-suave:  #b9a9e0;   /* texto secundario */
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Outfit', sans-serif;
+}
+
+body{
+    background:var(--fondo);
+    color:var(--texto);
+    overflow-x:hidden;
+}
+
+/* ============================================
+   ENCABEZADO
+   ============================================ */
+header{
+    text-align:center;
+    padding:35px 20px 30px;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(255,43,214,.25), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(37,244,238,.20), transparent 40%),
+        var(--fondo-card);
+    border-bottom:3px solid var(--lima);
+}
+
+header h1{
+    font-family:'Bungee', cursive;
+    font-size:clamp(38px, 9vw, 70px);
+    line-height:1;
+    color:var(--lima);
+    text-shadow:4px 4px 0 var(--rosa);
+    letter-spacing:1px;
+}
+
+header p{
+    color:var(--cyan);
+    margin-top:12px;
+    font-weight:600;
+    font-size:clamp(14px, 3vw, 18px);
+}
+
+/* ============================================
+   BANNER
+   ============================================ */
+.banner{
+    text-align:center;
+    padding:55px 20px 25px;
+}
+
+.banner h2{
+    font-family:'Bungee', cursive;
+    font-size:clamp(24px, 6vw, 40px);
+    margin-bottom:14px;
+    background:linear-gradient(90deg, var(--cyan), var(--rosa), var(--lima));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+.banner p{
+    color:var(--texto-suave);
+    font-size:clamp(14px, 3vw, 18px);
+    max-width:520px;
+    margin:0 auto;
+}
+
+/* ============================================
+   PRODUCTOS
+   ============================================ */
+.productos{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+    gap:25px;
+    padding:35px 25px 50px;
+    max-width:1100px;
+    margin:0 auto;
+}
+
+.card{
+    background:var(--fondo-card);
+    border:2px solid transparent;
+    border-radius:20px;
+    overflow:hidden;
+    transition:transform .25s, border-color .25s, box-shadow .25s;
+}
+
+.card:hover{
+    transform:translateY(-8px) rotate(-1deg);
+    border-color:var(--lima);
+    box-shadow:0 12px 30px rgba(198,255,46,.25);
+}
+
+/* ---- Recuadro de la imagen / emoji ---- */
+/* Cuando tengas la foto real, reemplaza el <div class="imagen"> ...
+   por:  <img src="ruta-de-tu-foto.png" class="imagen-foto">          */
+.imagen{
+    height:230px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:90px;
+    background:linear-gradient(135deg, var(--rosa), var(--cyan));
+}
+
+.imagen-foto{
+    width:100%;
+    height:230px;
+    object-fit:cover;
+    display:block;
+}
+
+/* Contenedor de la imagen + cartel SOLD OUT */
+.media{ position:relative; }
+
+.sold-out{
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(22,10,46,.65);
+}
+
+.sold-out span{
+    font-family:'Bungee', cursive;
+    font-size:26px;
+    color:#fff;
+    background:var(--rosa);
+    padding:8px 20px;
+    border-radius:10px;
+    transform:rotate(-12deg);
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
+    letter-spacing:1px;
+}
+
+.info{ padding:22px; }
+
+.nombre{
+    font-family:'Bungee', cursive;
+    font-size:20px;
+    margin-bottom:12px;
+    color:var(--texto);
+}
+
+.precio{
+    color:var(--lima);
+    font-size:28px;
+    font-weight:800;
+    margin-bottom:12px;
+}
+
+.stock{
+    background:rgba(198,255,46,.15);
+    color:var(--lima);
+    display:inline-block;
+    padding:6px 14px;
+    border-radius:30px;
+    font-weight:600;
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+.stock.agotado{
+    background:rgba(255,43,214,.15);
+    color:var(--rosa);
+}
+
+.boton{
+    display:block;
+    text-align:center;
+    background:var(--lima);
+    color:#160a2e;
+    text-decoration:none;
+    padding:14px;
+    border-radius:12px;
+    font-weight:800;
+    transition:background .2s, transform .1s;
+}
+
+.boton:hover{ background:#d8ff66; }
+.boton:active{ transform:scale(.97); }
+
+.boton.deshabilitado{
+    background:rgba(255,255,255,.12);
+    color:var(--texto-suave);
+    cursor:not-allowed;
+    pointer-events:none;
+}
+
+/* ============================================
+   MÉTODOS DE PAGO + FOOTER
+   ============================================ */
+footer{
+    text-align:center;
+    padding:40px 20px 50px;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+.titulo-pagos{
+    font-family:'Bungee', cursive;
+    font-size:22px;
+    color:var(--cyan);
+    margin-bottom:20px;
+}
+
+details{
+    max-width:380px;
+    margin:0 auto 30px;
+    text-align:left;
+}
+
+summary{
+    background:var(--rosa);
+    color:#160a2e;
+    padding:14px;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:800;
+    list-style:none;
+    text-align:center;
+}
+
+summary::-webkit-details-marker{ display:none; }
+
+.caja-pago{
+    margin-top:12px;
+    background:var(--fondo-card);
+    padding:18px;
+    border-radius:12px;
+}
+
+.caja-pago h3{
+    margin-bottom:10px;
+    color:var(--lima);
+}
+
+.caja-pago input{
+    width:100%;
+    padding:12px;
+    background:var(--fondo);
+    color:var(--texto);
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:8px;
+    margin-bottom:10px;
+    font-size:16px;
+}
+
+.btn-copiar{
+    width:100%;
+    background:var(--cyan);
+    color:#160a2e;
+    border:none;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:800;
+    font-size:15px;
+}
+
+.btn-wa{
+    display:inline-block;
+    background:#25D366;
+    color:white;
+    padding:15px 26px;
+    border-radius:12px;
+    text-decoration:none;
+    font-weight:800;
+    font-size:16px;
+    margin-top:10px;
+}
+
+.creditos{
+    margin-top:35px;
+    color:var(--texto-suave);
+    font-size:13px;
+}
+
+/* ============================================
+   CARRITO DE COMPRAS
+   ============================================ */
+/* Botón flotante */
+.cart-fab{
+    position:fixed; bottom:22px; right:22px; z-index:50;
+    background:var(--rosa); color:#160a2e; border:none; cursor:pointer;
+    border-radius:50px; padding:16px 22px; font-weight:800; font-size:16px;
+    box-shadow:0 8px 24px rgba(255,43,214,.45);
+    display:flex; align-items:center; gap:8px; font-family:'Outfit',sans-serif;
+}
+.cart-fab .count{
+    background:#160a2e; color:#fff; border-radius:50%;
+    min-width:24px; height:24px; padding:0 6px;
+    display:inline-flex; align-items:center; justify-content:center; font-size:13px;
+}
+.cart-fab.oculto{ display:none; }
+
+/* Panel lateral */
+.cart-overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:60;
+    display:none; justify-content:flex-end;
+}
+.cart-overlay.abierto{ display:flex; }
+.cart-panel{
+    background:var(--fondo-card); width:min(420px,100%); height:100%;
+    padding:24px; overflow-y:auto; display:flex; flex-direction:column;
+}
+.cart-panel h2{ font-family:'Bungee',cursive; font-size:24px; color:var(--lima); margin-bottom:6px; }
+.cart-cerrar{ background:none; border:none; color:var(--texto-suave); font-size:26px; cursor:pointer; align-self:flex-end; }
+.cart-items{ flex:1; margin:14px 0; }
+.cart-vacio{ color:var(--texto-suave); text-align:center; padding:40px 0; }
+.cart-item{
+    display:flex; align-items:center; gap:12px; background:var(--fondo);
+    padding:12px; border-radius:12px; margin-bottom:10px;
+}
+.cart-item img, .cart-item .ph{
+    width:52px; height:52px; border-radius:8px; object-fit:cover; flex:0 0 52px;
+    background:linear-gradient(135deg,var(--rosa),var(--cyan));
+}
+.cart-item .ci-info{ flex:1; min-width:0; }
+.cart-item .ci-nombre{ font-weight:700; font-size:14px; }
+.cart-item .ci-precio{ color:var(--lima); font-size:13px; }
+.cart-qty{ display:flex; align-items:center; gap:8px; }
+.cart-qty button{
+    width:28px; height:28px; border-radius:7px; border:none; cursor:pointer;
+    background:rgba(255,255,255,.12); color:var(--texto); font-weight:800; font-size:16px;
+}
+.cart-total{
+    font-size:20px; font-weight:800; display:flex; justify-content:space-between;
+    padding:14px 0; border-top:1px solid rgba(255,255,255,.12);
+}
+.cart-total b{ color:var(--lima); }
+.btn-checkout{
+    background:#25D366; color:#fff; border:none; cursor:pointer;
+    padding:16px; border-radius:12px; font-weight:800; font-size:16px; width:100%;
+    font-family:'Outfit',sans-serif;
+}
+.btn-checkout:disabled{ background:rgba(255,255,255,.12); color:var(--texto-suave); cursor:not-allowed; }
+.cart-nota{ font-size:12px; color:var(--texto-suave); text-align:center; margin-top:10px; }
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>MEGATEO-SHOP</h1>
+    <p>⚡ Los mejores Brainrots disponibles ⚡</p>
+</header>
+
+<section class="banner">
+    <h2>Bienvenido a MEGATEO-SHOP</h2>
+    <p>Compra tus Brainrots de forma rápida y segura. Elige, paga y reclama tu personaje al instante.</p>
+</section>
+
+<section class="productos" id="productos">
+
+    <!-- Los Brainrots se cargan solos desde la lista de abajo (al final del archivo). -->
+
+
+</section>
+
+<footer>
+
+    <div class="titulo-pagos">💳 Métodos de pago</div>
+
+    <details id="seccion-pago">
+        <summary>Ver llave Bre-B 📋</summary>
+        <div class="caja-pago">
+            <h3>Llave Bre-B</h3>
+            <input id="llave" value="@JDE969" readonly>
+            <button class="btn-copiar"
+                onclick="navigator.clipboard.writeText('@JDE969'); this.textContent='✅ ¡Copiada!';">
+                📋 Copiar llave
+            </button>
+        </div>
+    </details>
+
+    <p id="aviso-pago" style="color:var(--texto-suave); margin-bottom:10px;">
+        ¿Ya pagaste? Envíanos el comprobante:
+    </p>
+
+    <a class="btn-wa" id="btn-comprobante"
+       href="https://wa.me/573202745756?text=Hola,%20acabo%20de%20realizar%20un%20pago%20en%20MEGATEO-SHOP%20y%20voy%20a%20enviar%20el%20comprobante.">
+       📱 Enviar comprobante por WhatsApp
+    </a>
+
+    <div class="creditos">© MEGATEO-SHOP — Brainrots</div>
+
+</footer>
+
+<!-- ============================================
+     CARRITO DE COMPRAS
+     ============================================ -->
+<button class="cart-fab oculto" id="cart-fab">
+    🛒 Carrito <span class="count" id="cart-count">0</span>
+</button>
+
+<div class="cart-overlay" id="cart-overlay">
+    <div class="cart-panel">
+        <button class="cart-cerrar" id="cart-cerrar">✕</button>
+        <h2>🛒 Tu carrito</h2>
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-total">Total: <b id="cart-total">$0</b></div>
+        <button class="btn-checkout" id="cart-checkout" disabled>
+            📱 Finalizar por WhatsApp
+        </button>
+        <p class="cart-nota">Te abriremos WhatsApp con tu pedido y la llave de pago ya escritos. 🙏</p>
+    </div>
+</div>
+
+<!-- ============================================================
+     👇 AQUÍ MANEJAS TUS BRAINROTS 👇
+     Para cada uno pones:
+       nombre  -> el nombre del Brainrot
+       emoji   -> el emoji que se muestra (si no tienes foto)
+       precio  -> el precio (solo el número, sin puntos)
+       stock   -> CUÁNTOS TIENES en este momento
+       id      -> un nombre cortito y ÚNICO (sin espacios)
+
+     Para AGREGAR uno nuevo: copia una línea completa { ... },
+     y cambia los datos. ¡Listo!
+     ============================================================ -->
+<script type="module">
+
+// ===== 1) Conexión con Firebase =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, onValue, runTransaction }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDTUNZPry61umZiXDt77bqf_AQliEgZ-C0",
+  authDomain: "megateo-shop.firebaseapp.com",
+  databaseURL: "https://megateo-shop-default-rtdb.firebaseio.com",
+  projectId: "megateo-shop",
+  storageBucket: "megateo-shop.firebasestorage.app",
+  messagingSenderId: "15522133488",
+  appId: "1:15522133488:web:8bd2a92dd0292bb67cd935"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+const WHATSAPP = "573202745756"; // tu número
+const LLAVE = "@JDE969";          // tu llave Bre-B
+
+// NOTA: el catálogo (nombres, precios, fotos y stock) vive en Firebase
+// y lo manejas desde admin.html. Esta página solo lo MUESTRA y arma el carrito.
+
+/* ====== De aquí para abajo no necesitas tocar nada ====== */
+
+function formatearPrecio(n){
+    return "$" + Number(n).toLocaleString("es-CO");
+}
+
+let productosActuales = {}; // último catálogo recibido (para consultar stock)
+const carrito = {};          // lo que el cliente va eligiendo: id -> {nombre, precio, imagen, cantidad}
+
+// Escucha en TIEMPO REAL todo el catálogo
+const productosRef = ref(db, "productos");
+onValue(productosRef, (snap) => {
+    productosActuales = snap.val() || {};
+    pintarProductos(productosActuales);
+});
+
+function pintarProductos(productos){
+    const cont = document.getElementById("productos");
+    cont.innerHTML = "";
+
+    const ids = Object.keys(productos);
+    if (ids.length === 0){
+        cont.innerHTML = `<p style="grid-column:1/-1;text-align:center;color:var(--texto-suave)">
+            No hay Brainrots por ahora. ¡Vuelve pronto!</p>`;
+        return;
+    }
+
+    ids.forEach(id => {
+        const p = productos[id];
+        const stock = p.stock ?? 0;
+        const agotado = stock <= 0;
+
+        const imagen = p.imagen
+            ? `<img src="${p.imagen}" class="imagen-foto" alt="${p.nombre ?? ""}">`
+            : `<div class="imagen"></div>`;
+
+        const overlay = agotado ? `<div class="sold-out"><span>SOLD OUT</span></div>` : "";
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+            <div class="media">${imagen}${overlay}</div>
+            <div class="info">
+                <div class="nombre">${p.nombre ?? ""}</div>
+                <div class="precio">${formatearPrecio(p.precio ?? 0)}</div>
+                <div class="stock ${agotado ? "agotado" : ""}">
+                    ${agotado ? "✖ Sin stock" : "● Quedan: " + stock}
+                </div>
+                <button class="boton ${agotado ? "deshabilitado" : ""}" data-id="${id}">
+                   ${agotado ? "Agotado" : "🛒 Agregar al carrito"}
+                </button>
+            </div>
+        `;
+        cont.appendChild(card);
+    });
+
+    document.querySelectorAll(".boton[data-id]").forEach(boton => {
+        boton.addEventListener("click", () => agregarAlCarrito(boton.getAttribute("data-id")));
+    });
+}
+
+// ===== RESERVAR / LIBERAR stock en Firebase =====
+// reservar = baja 1 del stock (lo aparta). Devuelve true si lo logró.
+function reservar(id){
+    return runTransaction(ref(db, "productos/" + id + "/stock"), (s) => {
+        if (s === null) return s;
+        if (s <= 0) return;        // no hay -> cancela
+        return s - 1;
+    }).then(res => res.committed && res.snapshot.exists());
+}
+// liberar = sube 1 al stock (lo devuelve a disponibles)
+function liberar(id){
+    return runTransaction(ref(db, "productos/" + id + "/stock"), (s) => {
+        if (s === null) return s;
+        return s + 1;
+    });
+}
+
+// ===== CARRITO =====
+async function agregarAlCarrito(id){
+    const p = productosActuales[id];
+    if (!p) return;
+
+    const ok = await reservar(id);     // intenta apartar uno
+    if (!ok){
+        alert("Ya no quedan unidades de " + p.nombre);
+        return;
+    }
+
+    if (carrito[id]){
+        carrito[id].cantidad++;
+    } else {
+        carrito[id] = { nombre: p.nombre, precio: Number(p.precio) || 0, imagen: p.imagen || "", cantidad: 1 };
+    }
+    pintarCarrito();
+    abrirCarrito();
+}
+
+async function cambiarCantidad(id, delta){
+    if (!carrito[id]) return;
+
+    if (delta > 0){
+        const ok = await reservar(id);   // apartar uno más
+        if (!ok){ alert("No hay más disponibles"); return; }
+        carrito[id].cantidad++;
+    } else {
+        liberar(id);                     // devolver uno al stock
+        carrito[id].cantidad--;
+        if (carrito[id].cantidad <= 0) delete carrito[id];
+    }
+    pintarCarrito();
+}
+
+// Si cierran la página con cosas en el carrito sin comprar, devuelve el stock
+function liberarTodoElCarrito(){
+    Object.keys(carrito).forEach(id => {
+        for (let i = 0; i < carrito[id].cantidad; i++) liberar(id);
+    });
+}
+
+function totalCarrito(){
+    return Object.values(carrito).reduce((s, it) => s + it.precio * it.cantidad, 0);
+}
+
+function contarCarrito(){
+    return Object.values(carrito).reduce((s, it) => s + it.cantidad, 0);
+}
+
+function pintarCarrito(){
+    const items = document.getElementById("cart-items");
+    const ids = Object.keys(carrito);
+
+    if (ids.length === 0){
+        items.innerHTML = `<div class="cart-vacio">Tu carrito está vacío.<br>Agrega tus Brainrots 🛒</div>`;
+    } else {
+        items.innerHTML = "";
+        ids.forEach(id => {
+            const it = carrito[id];
+            const img = it.imagen ? `<img src="${it.imagen}">` : `<div class="ph"></div>`;
+            const fila = document.createElement("div");
+            fila.className = "cart-item";
+            fila.innerHTML = `
+                ${img}
+                <div class="ci-info">
+                    <div class="ci-nombre">${it.nombre}</div>
+                    <div class="ci-precio">${formatearPrecio(it.precio)} c/u</div>
+                </div>
+                <div class="cart-qty">
+                    <button data-menos="${id}">−</button>
+                    <span>${it.cantidad}</span>
+                    <button data-mas="${id}">+</button>
+                </div>
+            `;
+            items.appendChild(fila);
+        });
+
+        items.querySelectorAll("[data-mas]").forEach(b =>
+            b.addEventListener("click", () => cambiarCantidad(b.getAttribute("data-mas"), +1)));
+        items.querySelectorAll("[data-menos]").forEach(b =>
+            b.addEventListener("click", () => cambiarCantidad(b.getAttribute("data-menos"), -1)));
+    }
+
+    document.getElementById("cart-total").textContent = formatearPrecio(totalCarrito());
+    const count = contarCarrito();
+    document.getElementById("cart-count").textContent = count;
+    document.getElementById("cart-fab").classList.toggle("oculto", count === 0);
+    document.getElementById("cart-checkout").disabled = count === 0;
+}
+
+function abrirCarrito(){ document.getElementById("cart-overlay").classList.add("abierto"); }
+function cerrarCarrito(){ document.getElementById("cart-overlay").classList.remove("abierto"); }
+
+// ===== FINALIZAR: arma el mensaje de WhatsApp con todo el pedido =====
+function finalizarCompra(){
+    const ids = Object.keys(carrito);
+    if (ids.length === 0) return;
+
+    let texto = "¡Hola MEGATEO-SHOP! 🛒 Quiero comprar:\n\n";
+    ids.forEach(id => {
+        const it = carrito[id];
+        const sub = it.precio * it.cantidad;
+        texto += "• " + it.nombre + " x" + it.cantidad + " — " + formatearPrecio(sub) + "\n";
+    });
+    texto += "\nTOTAL: " + formatearPrecio(totalCarrito());
+    texto += "\n\n💳 Pago con la llave Bre-B: " + LLAVE;
+    texto += "\nYa te envío el comprobante. 🙏";
+
+    window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto), "_blank");
+
+    // El stock ya estaba reservado -> ahora es venta. Vaciamos el carrito
+    // SIN devolver el stock (porque ya se vendió).
+    Object.keys(carrito).forEach(id => delete carrito[id]);
+    pintarCarrito();
+    cerrarCarrito();
+}
+
+// Conectar los botones del carrito
+document.getElementById("cart-fab").addEventListener("click", abrirCarrito);
+document.getElementById("cart-cerrar").addEventListener("click", cerrarCarrito);
+document.getElementById("cart-overlay").addEventListener("click", (e) => {
+    if (e.target.id === "cart-overlay") cerrarCarrito(); // cerrar al tocar fuera
+});
+document.getElementById("cart-checkout").addEventListener("click", finalizarCompra);
+
+// Si cierran/recargan la página con cosas en el carrito sin comprar, devolvemos el stock
+window.addEventListener("pagehide", liberarTodoElCarrito);
+
+pintarCarrito(); // estado inicial
+</script>
+
+</body>
+</html>
