@@ -650,15 +650,6 @@ function finalizarCompra(){
     const ids = Object.keys(carrito);
     if (ids.length === 0) return;
 
-    // Pedir el nombre del titular de la cuenta que va a transferir
-    let titular = "";
-    while (true){
-        titular = (prompt("¿A nombre de quién está la cuenta del banco desde la que vas a transferir?\n(Escribe el nombre tal cual aparece en el banco)") || "").trim();
-        if (titular === null) return;           // si cancela, no hacemos nada
-        if (titular.length >= 3) break;          // nombre válido
-        alert("Por favor escribe el nombre del titular para continuar.");
-    }
-
     let texto = "¡Hola MEGATEO-SHOP! 🛒 Quiero comprar:\n\n";
     ids.forEach(id => {
         const it = carrito[id];
@@ -666,9 +657,9 @@ function finalizarCompra(){
         texto += "• " + it.nombre + " x" + it.cantidad + " — " + formatearPrecio(sub) + "\n";
     });
     texto += "\nTOTAL: " + formatearPrecio(totalCarrito());
-    texto += "\n\n👤 Titular de la cuenta: " + titular;
-    texto += "\n💳 Pago con la llave Bre-B: " + LLAVE;
-    texto += "\nYa te envío el comprobante. 🙏";
+    texto += "\n\n💳 Pago con la llave Bre-B: " + LLAVE;
+    texto += "\n\n👤 Titular de la cuenta (escribe aquí tu nombre tal cual aparece en el banco): ";
+    texto += "\n\nYa te envío el comprobante. 🙏";
 
     window.open("https://wa.me/" + WHATSAPP + "?text=" + encodeURIComponent(texto), "_blank");
 
